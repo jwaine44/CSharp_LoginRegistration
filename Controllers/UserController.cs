@@ -44,6 +44,12 @@ public class UserController : Controller
     }
 
     [HttpGet("/login")]
+    public IActionResult ShowLogin()
+    {
+        return View("Login");
+    }
+
+    [HttpPost("/login")]
     public IActionResult Login(LoginUser userSubmission)
     {
         if(ModelState.IsValid)
@@ -71,7 +77,11 @@ public class UserController : Controller
                 ModelState.AddModelError("Password", "Invalid password!");
                 return Login(userSubmission);
             }
-            return Success();
+
+            HttpContext.Session.SetInt32("userId", userInDb.id);
+            HttpContext.Session.SetString("email", userInDb.Email);
+
+            return RedirectToAction("Success");
         }
         return View("Login");
     }
